@@ -1,0 +1,19 @@
+{
+  "name": "bcrypt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "encrypt.js",
+  "scripts": {
+   
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
