@@ -5,37 +5,53 @@ const app = express();
 app.use(express.json());
 
 const users = [
-    { 
-    name: "Piet"
-    }
+
 ];
 
 // Routes
 
-app.get("/users",(req,res) => {
+app.get("/users", (req, res) => {
     res.json(users);
 });
 
-app.post("/users",async (req,res) => {
+app.post("/users", async (req, res) => {
 
     try {
-        const salt =  await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(req.body.password,salt);
 
-        const user = {
-            name: req.body.name,
-            password: hashedPassword }
-        console.log(salt);
-        console.log(hashedPassword);
+        // const salt =  await bcrypt.genSalt(); 
+
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const user = { name: req.body.name, password: hashedPassword }
+
         users.push(user);
         res.status(201).send();
-    }
-    catch {
+    } catch {
         res.status(500).send();
     }
 })
 
-// configure server
+app.post("/users/login", async (req, res) => {
+    const user = users.find(user => user.name === req.body.name);
+    // console.log(user);
+    if (user == null) {
+        return res.status(400).send("Cannot find user")
+    } // compare hashes with each other:
+    try {
+        if (await bcrypt.compare(req.body.password, user.password)) {
+            res.send("LoginStatus: success");
+        } else {
+            res.send("LoginStatus: failed - probably not allowed to login!");
+        }
+    } catch {
+        res.status(500).send();
+    }
+})
 
-app.listen(3000);
+// basic server configuration with a message in the console.
+
+const PORT = 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server is online.\nPORT:${PORT}`);
+});
 
